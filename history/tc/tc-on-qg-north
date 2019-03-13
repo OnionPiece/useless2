@@ -1,0 +1,7 @@
+tc -n qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db qdisc add dev qg-a4726011-b7 root handle 1: htb default 1000
+tc -n qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db class add dev qg-a4726011-b7 parent 1: classid 1:1000 htb rate 3mbit #burst 100kb
+tc -n qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db qdisc add dev qg-a4726011-b7 parent 1:1000 handle 1001: sfq perturb 10
+
+tc -n qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db class add dev qg-a4726011-b7 parent 1: classid 1:1 htb rate 1mbit #burst 100kb
+tc -n qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db qdisc add dev qg-a4726011-b7 parent 1:1 handle 2: sfq perturb 10
+tc -n qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db filter add devqg-a4726011-b7 protocol all parent ffff: prio 1 u32 match ip src 172.16.0.138/32 flowid 1:1

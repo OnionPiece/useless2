@@ -1,0 +1,41 @@
+# Writen by zongkai@polex.com.cn
+
++---controller-------+             +----net1------+
+|                    |             |              |
+|                    |             |  br-ex(eth2) |
+|           2net1-+--+-------------+------+ 2ctrl |
+|                 |  |             |      |       |
+|                 |  |         +---+------+ 2net2 |
+|                 |  |         |   |      |       |
+|                 |  |         |   |2net3 +-------+--+
+|                 |  |         |   +--------------+  |
+|                 |  |         |                     |
+|                 |  |         |   +----net2------+  |
+|                 |  |         |   |              |  |
+|                 |  |         |   |  br-ex(eth2) |  |
+|                 |  |         +-- +------+ 2net1 |  |
+|                 |  |             |      |       |  |
+|           2net2-+--+-------------+------+ 2ctrl |  |
+|                 |  |             |      |       |  |
+|                 |  |         +---+------+ 2net3 |  |
+|                 |  |         |   +--------------+  |
+| +--netns---+    |  |         |                     |
+| |"pub-port"|    |  |         |   +-----net3-----+  |
+| | pppex    |    |  |         |   |              |  |
+| |  |172.16.0.254|  |         |   |  br-ex(eth2) |  |
+| +--+-------+    |  |         +---+------+ 2net2 |  |
+|    |            |  |             |      |       |  |
+|    |      2net3-+--+-------------+------+ 2ctrl |  |
+|    |            |  |             |      |       |  |
+|    +------------+  |             |2net1 +-------+--+
+|                 |  |             +--------------+
+| ARP_Responder---+  |
+|                 |  |
+|         br-ex(eth2)|
++--------------------+
+
+fake external network IP range: 172.16.0.128 ~ 172.16.0.199
+on network node:
+  - ip a add 172.16.0.X/24 dev br-ex  (the same IP as eth2 has)
+  - ip r del 172.16.0.0/24 dev br-ex  (network node still need route on eth2 to communicate with other on the same net)
+  - ip r add 172.16.0.128/25 dev br-ex (a smaller CIDR is safe to isolate fake externla network from net using by eth2)

@@ -1,0 +1,7 @@
+TYPE=OVSPort
+BOOTPROTO=none
+DEFROUTE=no
+NAME=eth2
+DEVICE=eth2
+OVS_BRIDGE=br-node-ex
+ONBOOT="yes"

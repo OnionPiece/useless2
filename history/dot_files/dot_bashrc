@@ -1,0 +1,15 @@
+#writen by zongkai@polex.com.cn
+
+alias vi='vim'
+source /usr/share/doc/git-1.8.3.1/contrib/completion/git-completion.bash
+
+alias yumdownload='yum install --downloadonly --downloaddir=.'
+alias yumrdownload='yum reinstall --downloadonly --downloaddir=.'
+
+alias list_active_vrouters='for i in `ip netns | grep qrouter`; do ip netns exec $i ip a | grep -q 172.16 ; if [[ $? -eq 0 ]]; then echo $i | cut -c 9- | xargs -I {} cat /var/lib/neutron/ha_confs/{}/keepalived.conf | grep "instance VR" ;echo $i;fi; done'
+
+alias haproxystats='echo "show stat" | nc -U /var/lib/haproxy/stats  | egrep "(^#|neutron)" | cut -d "," -f 1,2,7,14,18,19,20,22-25,27-29,33,37-39,56,57'
+
+function clean_ports_with_net_name_format {
+    mysql -uroot "neutron" -e "delete from ports where network_id in (select id from networks where name like '%"$1"%')"
+}

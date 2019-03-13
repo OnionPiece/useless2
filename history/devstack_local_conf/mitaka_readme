@@ -1,0 +1,14 @@
+annotate create_neutron_initial_network in stack.sh for it fail to create a initial subnet (since with a wrong gateway)
+need manually config&start neutron-lbaasv2-agent
+for libvirt, try ```yum install libvirt-python```
+for OpenSSL, try annotate pyOpenSSL in devstack/files/rpms/general, then run ```pip install -v "pyOpenSSL==0.15.1"```
+
+service_plugins=router,vpnaas,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2,qos,firewall,metering
+[service_providers]
+service_provider=LOADBALANCERV2:Haproxy:neutron_lbaas.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
+service_provider=VPN:strongswan:neutron_vpnaas.services.vpn.service_drivers.ipsec.IPsecVPNDriver:default
+service_provider=FIREWALL:Iptables:neutron.agent.linux.iptables_firewall.OVSHybridIptablesFirewallDriver:default
+
+[fwaas]
+driver = neutron_fwaas.services.firewall.drivers.linux.iptables_fwaas.IptablesFwaasDriver
+enabled = True

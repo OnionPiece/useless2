@@ -1,0 +1,57 @@
+# Writen by zongkai@polex.com.cn
+
+    +---controller-------+             +------net1----------+
+    | (172.16.0.8/24)    |             |  (172.16.0.24/24)  |
+    |                    |             |                    |
+    |              2net1-+=============+-2ctrl     br-ex    |
+    |             /      |             |    \        /      |
+    |            /       |             |     \      /       |
+    |      br-node-ex    |             |    br-node-ex      |
+    |       /      \     |             |     /      \       |
+    |      /        \    |             |    /        \      |
+    |   2net3      2net2 |             |2net3        2net2  |
+    |    |             \ |             |/              |    |
+    +----+---------------+             +---------------+----+
+         ||               \\          //               ||
+         ||                \\        //                ||
+         ||                 \\      //                 ||
+         ||                  \\    //                  ||
+         ||                   \\  //                   ||
+         ||                    \\//                    ||
+         ||         172.16.0.128 ~ 172.16.0.200        ||
+         ||                    //\\                    ||
+         ||                   //  \\                   ||
+         ||                  //    \\                  ||
+         ||                 //      \\                 ||
+         ||                //        \\                ||
+         ||               //          \\               ||
+    +----+---------------+             +---------------+----+
+    |    |              /|             |\              |    |
+    |  2ctrl       2net1 |             | 2ctrl        2net1 |
+    |      \        /    |             |    \         /     |
+    |       \      /     |             |     \       /      |
+    |      br-node-ex    |             |    br-node-ex      |
+    |       /      \     |             |     /       \      |
+    |      /        \    |             |    /         \     |
+    |   br-ex      2net2-+=============+-2net3      br-ex   |
+    |                    |             |                    |
+    | (172.16.0.27/24)   |             |  (172.16.0.25/24)  |
+    +------net3----------+             +------net2----------+
+
+Underlay OpenStack support a network with CIDR 172.16.0.0/24 for overlay OpenStack external network.
+All nodes in overlay OpenStack (VMs in underlay OpenStack) has IP 172.16.0.X (X<100) on the external network.
+Overlay OpenStack use IP range 172.16.0.128 ~ 172.16.0.200 as external network allocation pools.
+
+Nodes ues tunnels to build OoO externale network between them.
+Tunnel endpoints are built on OVS bridge br-node-ex, and on network node, br-ex is attached with br-node-ex by patch ports.
+
+To tell nodes to treat different traffic on the external network:
+  - ip a add 172.16.0.X/24 dev br-node-ex  (the same IP as ethX has)
+  - ip r del 172.16.0.0/24 dev br-node-ex  (network node still need route on eth2 to communicate with other on the same net)
+  - ip r add 172.16.0.128/25 dev br-node-ex (a smaller CIDR is safe to isolate fake externla network from net using by ethX)
+
+To build tunnels and attach br-node-ex with br-ex, you may need commands such as:
+  - ovs-vsctl add-port br-ex 2-node-ex -- set interface 2-node-ex type=patch option:peer=2-br-ex
+  - ovs-vsctl add-port br-node-ex 2net1 -- set interface 2net1 type=vxlan option:df_default="true" option:in_key=flow option:local_ip=172.16.0.8 option:out_key=flow option:remote_ip=172.16.0.24
+
+After the basic environment set up, try to use load_br_ex_flows_on_ctrl.sh and load_br_ex_flows_on_netX.sh to add flows onto br-node-ex.

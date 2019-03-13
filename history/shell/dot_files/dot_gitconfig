@@ -1,0 +1,7 @@
+[user]
+        name = zonkgai
+        email = zongkai@polex.com.cn
+[core]
+        editor = vim
+[color]
+        ui = true

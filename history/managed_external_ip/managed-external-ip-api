@@ -1,0 +1,7 @@
+curl -g -X GET http://192.168.1.50:9696/v2.0/managed_external_ips.json -H "X-Auth-Token: 95c8420b1ff846e1b87eec875d297bd2" | python -mjson.tool
+
+curl -g -X DELETE http://192.168.1.50:9696/v2.0/managed_external_ips/96847d62-3d4a-471b-8fbe-6c67ba8432d4.json -H "X-Auth-Token: 95c8420b1ff846e1b87eec875d297bd2"
+
+curl -g -i -X POST http://192.168.1.50:9696/v2.0/managed_external_ips.json -H "X-Auth-Token: 95c8420b1ff846e1b87eec875d297bd2" -d '{"managed_external_ip": {"network_id": "7b2f5040-9296-4b29-b77f-48b72baa760f"}}'
+
+curl -g -X GET http://192.168.1.50:9696/v2.0/managed_external_ips.json?ip_address=172.16.0.137 -H "X-Auth-Token: 95c8420b1ff846e1b87eec875d297bd2" | python -mjson.tool

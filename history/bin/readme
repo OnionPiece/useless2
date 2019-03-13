@@ -1,0 +1,6 @@
+arping2
+    Ref: https://en.wikipedia.org/wiki/Arping
+    I compile arping from https://github.com/ThomasHabets/arping, and copy the binary here as arping2.
+    Since we may still need arping from iputils, so rename should be a simplest way to keep both.
+    This arping is based on libnet and libpcap, so make sure the OS has them installed before running arping2.
+    On CentOS, need install libnet-devel and libpcap-devel.

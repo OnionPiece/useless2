@@ -1,0 +1,26 @@
+[[local|localrc]]
+HOST_IP=192.168.1.40
+FLAT_INTERFACE=eth0
+FIXED_RANGE=10.4.128.0/20
+FIXED_NETWORK_SIZE=4096
+FLOATING_RANGE=192.168.42.128/25
+MULTI_HOST=1
+LOGFILE=/opt/stack/logs/stack.sh.log
+ADMIN_PASSWORD=labstack
+DATABASE_PASSWORD=supersecret
+RABBIT_PASSWORD=supersecret
+SERVICE_PASSWORD=supersecret
+
+enable_plugin neutron-vpnaas https://git.openstack.org/openstack/neutron-vpnaas
+enable_plugin neutron-lbaas https://git.openstack.org/openstack/neutron-lbaas
+enable_plugin neutron-fwaas https://git.openstack.org/openstack/neutron-fwaas
+
+enable_service q-l3
+enable_service q-meta
+enable_service q-dhcp
+enable_service neutorn-lbaasv2
+enable_service q-lbaasv2
+enable_service q-vpnaas
+enable_service q-fwaas
+
+IPSEC_PACKAGE="libreswan"

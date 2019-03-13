@@ -1,0 +1,5 @@
+ip l add ifb-7559b358-6c type ifb
+ip l set ifb-7559b358-6c netns qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db
+ip netns exec qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db ip l set ifb-7559b358-6c up
+ip netns exec qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db tc filter add dev qg-* parent ffff: protocol ip u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb-7559b358-6c
+ip netns exec qrouter-7559b358-6cf4-4900-9c7d-99046bbad2db tc qdisc add dev ifb-7559b358-6c root handle 1: htb

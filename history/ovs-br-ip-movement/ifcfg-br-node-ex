@@ -1,0 +1,10 @@
+TYPE=OVSBridge
+DEVICETYPE=ovs
+BOOTPROTO="static"
+DEFROUTE=no
+NAME=br-node-ex
+DEVICE=br-node-ex
+IPADDR=172.16.0.24
+NETMASK=255.255.255.0
+ONBOOT="yes"
+OVS_EXTRA="set Bridge br-node-ex other-config:hwaddr=\"fa:16:3e:98:af:2f\" -- add-port br-node-ex 2-br-ex -- set interface 2-br-ex type=patch option:peer=2-node-ex"

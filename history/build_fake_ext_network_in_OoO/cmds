@@ -1,0 +1,5 @@
+#
+ovs-vsctl add-port br-ex 2-node-ex -- set interface 2-node-ex type=patch option:peer=2-br-ex
+
+#
+ovs-vsctl add-port br-node-ex 2net1 -- set interface 2net1 type=vxlan option:df_default="true" option:in_key=flow option:local_ip=172.16.0.8 option:out_key=flow option:remote_ip=172.16.0.24

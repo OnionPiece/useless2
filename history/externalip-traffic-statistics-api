@@ -1,0 +1,1 @@
+curl -g -X GET http://192.168.1.50:9696/v2.0/externaliptrafficstatisticss.json -H "X-Auth-Token: 076fb16de389463fb2a633d67b834cdc" | python -mjson.tool

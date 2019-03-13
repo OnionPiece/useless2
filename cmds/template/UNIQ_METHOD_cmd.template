@@ -1,0 +1,44 @@
+# writen by zongkai@polex.com.cn
+
+import constants as const
+import utils
+
+
+@utils.run_cmds
+def UNIQ_METHOD_method(*args, **kwargs):
+    """define sub-method/sub_cmd.
+
+    The sub-method/sub_cmd should have the same uniq head with module file,
+    like method list_port in list_cmd.py is for command `oceana list port`.
+
+    With decorator run_cmd, a method should:
+      - return a command string to run, like 'ls',
+      - return a list of command strings.
+      - raise utils.InnerException with message like:
+        utils.InnerException('not supported yet') for error case handle
+    """
+    cmd_str = 'ls'
+    return cmd_str
+
+
+def register_method(*args, **kwargs):
+    """resigter arguments for method.
+
+    For case method has special arguments:
+        def register_method(*args, **kwargs):
+            return [
+                ('arg1', {'help': 'xx'}),
+                ('arg2', {'help': 'xx', 'action': 'store_true'}),
+                ('argN', {'choices': ['a', 'b']}),
+                ...
+            ]
+    arg1 is name of argument, and for argument like {'help': 'xx'}, check
+    https://docs.python.org/2/library/argparse.html#the-add-argument-method
+
+    For case method doesn't need any arguments:
+        def register_method(*args, **kwargs):
+            pass
+
+    For case method use default argument way, don't create register_* method
+    """
+    pass

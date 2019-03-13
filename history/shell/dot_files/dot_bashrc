@@ -1,0 +1,54 @@
+#writen by zongkai@polex.com.cn
+
+alias vi='vim'
+source /usr/share/doc/git-1.8.3.1/contrib/completion/git-completion.bash
+
+alias yumdownload='yum install --downloadonly --downloaddir=.'
+alias yumrdownload='yum reinstall --downloadonly --downloaddir=.'
+
+alias list_active_vrouters='for i in `ip netns | grep qrouter`; do ip netns exec $i ip a | grep -q 172.16 ; if [[ $? -eq 0 ]]; then echo $i | cut -c 9- | xargs -I {} cat /var/lib/neutron/ha_confs/{}/keepalived.conf | grep "instance VR" ;echo $i;fi; done'
+function list_router_ports_host {
+    for i in `neutron router-port-list $1 | awk '{if($4 == "|") print $2}'`; do
+        neutron port-show $i | egrep "(binding:host_id| id )"
+    done
+}
+function list_hosting_agent {
+    case $1 in
+        "router")
+            neutron l3-agent-list-hosting-router $2
+            ;;
+        "net")
+            neutron dhcp-agent-list-hosting-net $2
+            ;;
+        "lbaas")
+            neutron lbaas-agent-hosting-loadbalancer $2
+            ;;
+        *)
+            echo "unknown resource...please update .bashrc"
+    esac
+}
+function list_rabbitmq_queues {
+    case $1 in
+        "nova")
+            rabbitmqctl list_queues --online pid name synchronised_slave_pids | egrep "(cert|conductor|console|consoleauth| scheduler)"
+            ;;
+        "neutron")
+            rabbitmqctl list_queues --online pid name synchronised_slave_pids | egrep "(lbaas|l3|dhcp|metering|q-agent|q-plugin|q-reports|ipsec)"
+            ;;
+        "cinder")
+            rabbitmqctl list_queues --online pid name synchronised_slave_pids | grep cinder
+            ;;
+        "glance")
+            rabbitmqctl list_queues --online pid name synchronised_slave_pids | grep "notifications"
+            ;;
+        *)
+            echo "unknown resource...please update .bashrc"
+    esac
+}
+
+alias haproxystats='echo "show stat" | nc -U /var/lib/haproxy/stats  | egrep "(^#|neutron)" | cut -d "," -f 1,2,7,14,18,19,20,22-25,27-29,33,37-39,56,57'
+
+function clean_ports_with_net_name_format {
+    mysql -uroot "neutron" -e "delete from ports where network_id in (select id from networks where name like '%"$1"%')"
+}
+alias oceana_neutron_api='bash oceana/shell/function/oceana_neutron_api.sh'

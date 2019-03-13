@@ -1,0 +1,44 @@
+# writen by zongkai@polex.com.cn
+
+import constants as const
+import utils
+
+
+@utils.run_cmd
+def method(*args, **kwargs):
+    """define sub-method/sub_cmd.
+
+    With decorator run_cmd, a method should return:
+      - a command string to run, like 'ls',
+      - or error handler method in utils, like utils.unknown_sub_resource
+    """
+    cmd_str = 'ls'
+    return cmd_str
+
+
+def arg_register(method_subparsers):
+    """resigter arguments for method.
+
+    For specific commands, they should define their arguments directly
+    via method_subparsers, like:
+        meth_subparser = method_subparsers.add_parser('cmd')
+        sub_cmd_subparser = meth_subparser.add_subparsers(dest='sub_cmd')
+        for sub_resource in get_resource_map():
+            action_parser = sub_cmd_subparser.add_parser(sub_resource)
+            action_parser.add_argument('action', help='xxx')
+
+    For more details to add_*, go check
+    https://docs.python.org/2/library/argparse.html, 
+    such as
+    https://docs.python.org/2/library/argparse.html#the-add-argument-method
+
+    For case method doesn't need any arguments:
+        def arg_register(*args, **kwargs):
+            pass
+    """
+    pass
+
+
+def main(**kwargs):
+    """For specific method, use main as unique entrance."""
+    pass
